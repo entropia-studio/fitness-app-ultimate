@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Routes } from '@angular/router';
+import { Routes, RouterModule } from '@angular/router';
 import { RegisterComponent } from './containers/register/register.component';
+import { SharedModule } from '../shared/shared.module';
 
 const routes: Routes = [
   { path: '' , component: RegisterComponent}
@@ -12,7 +13,9 @@ const routes: Routes = [
     RegisterComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    RouterModule.forChild(routes),
+    SharedModule
   ]
 })
 export class RegisterModule { }
