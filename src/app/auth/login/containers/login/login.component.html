@@ -9,5 +9,9 @@
     <button type="submit">
       Login
     </button>
+    <div
+       class="error" *ngIf="error">
+         {{ error }}
+      </div>
   </app-auth-form>
 </div>
