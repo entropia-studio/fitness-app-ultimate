@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 
 // features modules
 import { AuthModule } from './auth/auth.module';
+import { HealthModule } from './health/health.module';
 
 // firebase
 import { AngularFireModule } from '@angular/fire';
@@ -18,7 +19,6 @@ import { AppHeaderComponent } from './components/app-header/app-header.component
 import { AppNavComponent } from './components/app-nav/app-nav.component';
 import { AppComponent } from './app.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,7 +31,8 @@ import { AppComponent } from './app.component';
     AngularFireAuthModule,    
     AppRoutingModule,
     AngularFirestoreModule,
-    AuthModule
+    AuthModule,
+    HealthModule
   ],
   providers: [Store],
   bootstrap: [AppComponent]

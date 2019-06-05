@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Store } from 'src/app/store';
+import { Observable } from 'rxjs';
 
 
 
@@ -27,6 +28,14 @@ export class AuthService {
     }
     this.store.set('user',user);
   })    
+
+  get user(){
+    return this.af.auth.currentUser;
+  }
+
+  get authState(): Observable<firebase.User>{
+    return this.af.authState;
+  }
 
   constructor(
     private af: AngularFireAuth,

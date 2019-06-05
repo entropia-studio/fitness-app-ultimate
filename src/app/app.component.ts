@@ -29,13 +29,9 @@ export class AppComponent implements OnInit, OnDestroy{
     this.subscription.unsubscribe();
   }
 
-  async onLogout(){
-    try{
-      await this.authService.logoutUser();    
-      this.router.navigate(['/auth/login']);
-    } catch(err){
-      console.log(err)
-    }
+  async onLogout(){   
+    await this.authService.logoutUser();    
+    this.router.navigate(['/auth/login']);   
   }
 
 }
