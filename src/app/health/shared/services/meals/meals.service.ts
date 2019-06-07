@@ -63,7 +63,7 @@ export class MealsService {
     return this.store.select<Meal[]>('meals')
       .pipe(
         filter(Boolean),
-        map(meals => meals.find((meal: Meal) => meal.id === id)
+        map((meals: Meal[]) => meals.find((meal: Meal) => meal.id === id)
        )
       )
   }

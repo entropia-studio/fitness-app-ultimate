@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { tap, map, switchMap } from 'rxjs/operators';
+import { tap, map, switchMap, withLatestFrom, filter } from 'rxjs/operators';
 import { Store } from 'src/app/store';
 import { Meal } from '../meals/meals.service';
 import { Workout } from '../workouts/workouts.service';
@@ -8,10 +8,12 @@ import { AngularFirestoreCollection, AngularFirestore } from '@angular/fire/fire
 import { AuthService } from 'src/app/auth/shared/services/auth/auth.service';
 
 export interface ScheduleItem {
-  meals: Meal[],
+  id?: string,
+  meals: Meal[],  
   workouts: Workout[],
   section: string,
   timestamp: number,
+  uid?: string,
   $key?: string
 }
 
@@ -31,10 +33,34 @@ export class ScheduleService {
   private date$ = new BehaviorSubject(new Date());
   private scheduleCollection: AngularFirestoreCollection<ScheduleItem>;  
   private section$ = new Subject();
+  private itemList$ = new Subject();  
 
-  // schedule$: Observable<any[] | Date> = this.date$.asObservable().pipe(
-  //   tap(next => this.store.set('date',next))
-  // )  
+  item$ = this.itemList$
+    .pipe(
+      withLatestFrom(this.section$),
+      map(([items, section] : any[]) => {
+        const id = section.data.id;
+
+        const defaults : ScheduleItem = {
+          workouts: null,
+          meals: null,
+          section: section.section,
+          uid: this.uid,
+          timestamp: new Date(section.day).getTime()
+        }
+
+        const payload = {
+          ...(id ? section.data : defaults),
+          ...items
+        }
+        if (id){
+          return this.updateSection(id, payload)
+        }else{
+          return this.createSection(payload);
+        }
+
+      })
+    )
   selected$ = this.section$.asObservable().pipe(
     tap(next => this.store.set('selected',next))
   )
@@ -44,7 +70,7 @@ export class ScheduleService {
     tap(next => this.store.set('list',next))
   )
 
-  schedule$: Observable<ScheduleItem[]> = this.date$.asObservable().pipe(
+  schedule$: Observable<ScheduleItem[]> = this.date$.asObservable().pipe(    
     tap(next => this.store.set('date',next)),
     map((day: any) => {
       const startAt = (
@@ -57,14 +83,14 @@ export class ScheduleService {
 
       return { startAt, endAt };  
     }),
-    switchMap(({ startAt, endAt }: any) => this.getSchedule(startAt, endAt)),
-    map((data: any) => {
-
-      const mapped: ScheduleList = {};
-
-      for (const prop of data) {
-        if (!mapped[prop.section]) {
-          mapped[prop.section] = prop;
+    switchMap(({ startAt, endAt }: any) => this.getSchedule(startAt, endAt)),    
+    map((data: any) => {      
+      const mapped: ScheduleList = {};      
+      for (const prop of data) { 
+        if (prop !== undefined){
+          if (!mapped[prop.section]) {
+            mapped[prop.section] = prop;
+          }
         }
       }
       return mapped;
@@ -86,14 +112,31 @@ export class ScheduleService {
     this.section$.next(event);
   }
 
+  updateItems(items: string[]) {
+    this.itemList$.next(items);
+  }
+
+  private updateSection(id: string, payload: ScheduleItem){    
+    return this.scheduleCollection.doc(id).update(payload);
+  }
+
+  private createSection(payload: ScheduleItem){
+    return this.scheduleCollection.add(payload); 
+  }
+
   private getSchedule(startAt: number, endAt: number) {
     this.scheduleCollection = this.db.collection<ScheduleItem>('schedule',
       ref => ref.where('uid','==',this.uid));
     return this.scheduleCollection.snapshotChanges().pipe(
       map(actions => actions.map(a => {
         const data = a.payload.doc.data() as ScheduleItem;
-        const id = a.payload.doc.id;    
-        return { id, ...data };
+        const id = a.payload.doc.id; 
+        const startAtDate = new Date(startAt);
+        const endAtDate = new Date(endAt);
+        const firebaseDate = new Date(data.timestamp);
+        if (firebaseDate >= startAtDate && firebaseDate <= endAtDate){
+          return { id, ...data };
+        }        
       })
     ))          
   }

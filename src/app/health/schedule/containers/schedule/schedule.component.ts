@@ -37,6 +37,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
       this.scheduleService.schedule$.subscribe(),
       this.scheduleService.selected$.subscribe(),
       this.scheduleService.list$.subscribe(),
+      this.scheduleService.item$.subscribe(),
       this.workoutsService.workouts$.subscribe(),
       this.mealsService.meals$.subscribe()
     ];    
@@ -54,5 +55,14 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     this.open = true;
     this.scheduleService.selectSection(event);
   }
+
+  assignItem(items: string[]) {
+    this.scheduleService.updateItems(items);
+    this.closeAssign();
+  }
+
+  closeAssign() {
+    this.open = false;
+}
 
 }
