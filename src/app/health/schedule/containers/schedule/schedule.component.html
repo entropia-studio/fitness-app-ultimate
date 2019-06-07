@@ -2,6 +2,7 @@
     <schedule-calendar
       [date]="date$ | async"
       [items]="schedule$ | async"
-      (change)="changeDate($event)">
+      (change)="changeDate($event)"
+      (select)="changeSection($event)">
     </schedule-calendar>
 </div>
