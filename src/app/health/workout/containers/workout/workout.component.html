@@ -10,19 +10,18 @@
         </ng-template>
       </h1>
   </div>
-  <div *ngIf="workout$ | async as workout;else loading">
+  <div *ngIf="workout$ | async as workout; else loading;">
     <workout-form
       (create)="addWorkout($event)"
       (update)="updateWorkout($event)"
       (remove)="removeWorkout($event)"
-      [workout]="workout"
-      >
+      [workout]="workout">
     </workout-form>
-    <ng-template #loading>
-      <div class="message">
-        <img src="/assets/loading.svg">
-        Fetching workout...
-      </div>
-    </ng-template>
   </div>
+  <ng-template #loading>
+    <div class="message">
+      <img src="/assets/loading.svg">
+      Fetching workout...
+    </div>
+  </ng-template>  
 </div>
