@@ -4,10 +4,12 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import { User } from './auth/shared/services/auth/auth.service';
 import { Meal } from './health/shared/services/meals/meals.service';
 import { Workout } from './health/shared/services/workouts/workouts.service';
+import { ScheduleItem } from './health/shared/services/schedule/schedule.service';
 
 export interface State {
   user: User,
   meals: Meal[],
+  schedule: ScheduleItem[],
   date: Date,
   workouts: Workout[],
   [key: string]: any
@@ -16,8 +18,9 @@ export interface State {
 const state: State = {
   user: undefined,
   meals: undefined,
+  schedule: undefined,
   date: undefined,
-  workouts: undefined
+  workouts: undefined,
 };
 
 export class Store {

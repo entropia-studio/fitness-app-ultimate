@@ -6,6 +6,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ScheduleCalendarComponent } from './components/schedule-calendar/schedule-calendar.component';
 import { ScheduleDaysComponent } from './components/schedule-days/schedule-days.component';
 import { ScheduleControlsComponent } from './components/schedule-controls/schedule-controls.component';
+import { SharedModule } from '../shared/shared.module';
+import { ScheduleSectionComponent } from './components/schedule-section/schedule-section.component';
 
 const routes: Routes = [
   {path: '', component: ScheduleComponent}
@@ -16,12 +18,14 @@ const routes: Routes = [
     ScheduleComponent,
     ScheduleCalendarComponent,
     ScheduleDaysComponent,
-    ScheduleControlsComponent
+    ScheduleControlsComponent,
+    ScheduleSectionComponent
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    ReactiveFormsModule
+    ReactiveFormsModule, 
+    SharedModule
   ]
 })
 export class ScheduleModule { }
