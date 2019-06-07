@@ -65,7 +65,7 @@ export class WorkoutsService {
     return this.store.select<Workout[]>('workouts')
       .pipe(
         filter(Boolean),
-        map(workouts => workouts.find((workout: Workout) => workout.id === id)
+        map((workouts: any[]) => workouts.find((workout: Workout) => workout.id === id)
        )
       )
   }
